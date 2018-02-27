@@ -1,11 +1,10 @@
 import numpy as np 
 from scipy.optimize import minimize
-from temp import NH1, NL1
 from scipy.stats import  expon
 
 lambdaB = 1 #Buyer's exponential distribution parameter
 lambdaS = 1 #Seller's exponential distribution parameter
-dist = 1
+dist = 2
 s = 4
 
 
@@ -41,13 +40,24 @@ def constraintGenEq2(x, location = 1):
 def constraintGenEq3(x, location = 2):
     return NS(x, location)- NH(x, location) -(1+x[7+location])*NL(x, location)
 
+def constraintProbLow1(x):
+    return x[7] - (x[3]-x[0])/(dist) 
+def constraintProbLow2(x):
+    return x[8] - (x[4]-x[1])/(dist) 
+def constraintProbLow3(x):
+    return x[9] - (x[5]-x[2])/(dist) 
+
 conGen1= {'type': 'eq', 'fun': constraintGenEq1} #this wont work
 conGen2= {'type': 'eq', 'fun': constraintGenEq2}
 conGen3= {'type': 'eq', 'fun': constraintGenEq2}
+conProb1= {'type': 'ineq', 'fun': constraintProbLow1}
+conProb2= {'type': 'ineq', 'fun': constraintProbLow2}
+conProb3= {'type': 'ineq', 'fun': constraintProbLow3}
 
-upper = 150
-cons = ([conGen1, conGen2, conGen3])
-bnds = ((0,upper),(0,upper),(0,upper),(0,upper),(0,upper),(0,upper),(0,1),(0,1),(0,1),(0,1))
+
+
+cons = ([conGen1, conGen2, conGen3, conProb1, conProb2, conProb3])
+bnds = ((0,None),(0,None),(0,None),(0,None),(0,None),(0,None),(0,1),(0,1),(0,1),(0,1))
 
 n=len(bnds)
 x0 = np.zeros(n)+0.1
