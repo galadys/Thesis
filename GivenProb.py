@@ -20,7 +20,10 @@ def objective(x):
     PL = [x[0], x[1], x[2]]
     PH = [x[3], x[4], x[5]]
     location = [0,1,2]
-    return -r*(sum(NL(x, location)*PL[location] + NH(x, location)*PH[location]))
+    output = 0
+    for i in location:
+        output = output + r*(NL(x, i)*PL[i] + NH(x, i)*PH[i])
+    return -output
 
 def NH(x, location):
     return 1-CDF((x[3+location]-x[0+location])/(x[7+location]), lambdaB)
@@ -31,9 +34,11 @@ def NL(x, location):
 def NS(x, location):
     return 1- CDF((NH(x, location)*(x[3+location]-x[6+location])+NL(x, location)*(x[location]-x[6+location]))/(NH(x, location) + (1-x[7+ location])*NL(x, location)+2*x[7+location]*NL(x, location)), lambdaS)
 
-def NS1(x): #Number of sellers at location 1
-    return 1- CDF((NH1(x)*(x[3]-x[6])+NL1(x)*(x[0]-x[6]))/(NH1(x) + (1-x[7])*NL1(x)+2*x[7]*NL1(x)), lambdaS)
-
 def constraintGenEq(x, location):
     return NS(x, location)- NH(x, location) -(1+x[7+location])*NL(x, location)
+
+conGen1= {'type': 'eq', 'fun': constraintGenEq(x, 0)} #this wont work
+conGen2= {'type': 'eq', 'fun': constraintGenEq(x, 1)}
+conGen3= {'type': 'eq', 'fun': constraintGenEq(x, 2)}
+
 
