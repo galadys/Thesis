@@ -34,11 +34,24 @@ def NL(x, location):
 def NS(x, location):
     return 1- CDF((NH(x, location)*(x[3+location]-x[6+location])+NL(x, location)*(x[location]-x[6+location]))/(NH(x, location) + (1-x[7+ location])*NL(x, location)+2*x[7+location]*NL(x, location)), lambdaS)
 
-def constraintGenEq(x, location):
+def constraintGenEq1(x, location = 0):
+    return NS(x, location)- NH(x, location) -(1+x[7+location])*NL(x, location)
+def constraintGenEq2(x, location = 1):
+    return NS(x, location)- NH(x, location) -(1+x[7+location])*NL(x, location)
+def constraintGenEq3(x, location = 2):
     return NS(x, location)- NH(x, location) -(1+x[7+location])*NL(x, location)
 
-conGen1= {'type': 'eq', 'fun': constraintGenEq(x, 0)} #this wont work
-conGen2= {'type': 'eq', 'fun': constraintGenEq(x, 1)}
-conGen3= {'type': 'eq', 'fun': constraintGenEq(x, 2)}
+conGen1= {'type': 'eq', 'fun': constraintGenEq1} #this wont work
+conGen2= {'type': 'eq', 'fun': constraintGenEq2}
+conGen3= {'type': 'eq', 'fun': constraintGenEq2}
 
+upper = 150
+cons = ([conGen1, conGen2, conGen3])
+bnds = ((0,upper),(0,upper),(0,upper),(0,upper),(0,upper),(0,upper),(0,1),(0,1),(0,1),(0,1))
+
+n=len(bnds)
+x0 = np.zeros(n)+0.1
+
+solution = minimize(objective,x0, bounds = bnds, constraints = cons)
+print(solution)
 
