@@ -1,5 +1,6 @@
 import numpy as np 
 from scipy.optimize import minimize
+from temp import NH1, NL1
 from scipy.stats import  expon
 
 lambdaB = 1 #Buyer's exponential distribution parameter
@@ -28,7 +29,10 @@ def NL(x, location):
     return CDF((x[3+location]-x[0+location])/x[7+location], lambdaB) - CDF((s-x[0+location])/(1+x[7+location]), lambdaB)
 
 def NS(x, location):
-    return 1- CDF((NH(x, location)*(x[3+location]-x[6+location])+NL(x, location)*(x[0+location]-x[6+location]))/(NH(x, location) + (1-x[7, location])*NL(x, location)+2*x[7+location]*NL(x, location)), lambdaS)
+    return 1- CDF((NH(x, location)*(x[3+location]-x[6+location])+NL(x, location)*(x[location]-x[6+location]))/(NH(x, location) + (1-x[7+ location])*NL(x, location)+2*x[7+location]*NL(x, location)), lambdaS)
+
+def NS1(x): #Number of sellers at location 1
+    return 1- CDF((NH1(x)*(x[3]-x[6])+NL1(x)*(x[0]-x[6]))/(NH1(x) + (1-x[7])*NL1(x)+2*x[7]*NL1(x)), lambdaS)
 
 def constraintGenEq(x, location):
     return NS(x, location)- NH(x, location) -(1+x[7+location])*NL(x, location)
